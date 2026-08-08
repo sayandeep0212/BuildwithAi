@@ -8,6 +8,8 @@ interface SettingsModalProps {
   onUpdateUser: (updated: Partial<UserProfile>) => void;
   settings: TimerSettings;
   onUpdateSettings: (updated: TimerSettings) => void;
+  isDarkMode: boolean;
+  onSetDarkMode: (isDark: boolean) => void;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -17,6 +19,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onUpdateUser,
   settings,
   onUpdateSettings,
+  isDarkMode,
+  onSetDarkMode,
 }) => {
   const [userName, setUserName] = useState<string>(user.name);
   const [focusMins, setFocusMins] = useState<number>(settings.focusMinutes);
@@ -43,7 +47,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       <div className="glass-panel p-6 sm:p-8 rounded-3xl max-w-sm w-full relative z-10 shadow-xl border border-white/50">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface p-1 rounded-full"
+          className="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface p-1 rounded-full hover:bg-surface-container"
         >
           <span className="material-symbols-outlined text-2xl">close</span>
         </button>
@@ -54,6 +58,39 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </h3>
 
         <div className="space-y-4 text-left">
+          {/* Appearance Theme Selector */}
+          <div>
+            <label className="text-xs font-semibold text-on-surface-variant block mb-1.5">
+              Appearance Theme
+            </label>
+            <div className="grid grid-cols-2 gap-2 p-1 bg-surface-container-low rounded-xl border border-surface-variant/40">
+              <button
+                type="button"
+                onClick={() => onSetDarkMode(false)}
+                className={`py-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all ${
+                  !isDarkMode
+                    ? 'bg-surface-container-lowest text-primary shadow-sm'
+                    : 'text-on-surface-variant hover:text-on-surface'
+                }`}
+              >
+                <span className="material-symbols-outlined text-base">light_mode</span>
+                Light
+              </button>
+              <button
+                type="button"
+                onClick={() => onSetDarkMode(true)}
+                className={`py-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all ${
+                  isDarkMode
+                    ? 'bg-surface-container-highest text-primary shadow-sm'
+                    : 'text-on-surface-variant hover:text-on-surface'
+                }`}
+              >
+                <span className="material-symbols-outlined text-base">dark_mode</span>
+                Dark
+              </button>
+            </div>
+          </div>
+
           {/* Name */}
           <div>
             <label className="text-xs font-semibold text-on-surface-variant block mb-1">
@@ -63,7 +100,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               type="text"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
-              className="w-full p-3 rounded-xl bg-surface-container-low border border-surface-variant text-sm text-on-surface outline-none focus:ring-2 focus:ring-primary-container"
+              className="w-full p-3 rounded-xl bg-surface-container-low border border-surface-variant/40 text-sm text-on-surface outline-none focus:ring-2 focus:ring-primary-container"
             />
           </div>
 
@@ -78,7 +115,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               max="120"
               value={focusMins}
               onChange={(e) => setFocusMins(parseInt(e.target.value) || 25)}
-              className="w-full p-3 rounded-xl bg-surface-container-low border border-surface-variant text-sm text-on-surface outline-none focus:ring-2 focus:ring-primary-container"
+              className="w-full p-3 rounded-xl bg-surface-container-low border border-surface-variant/40 text-sm text-on-surface outline-none focus:ring-2 focus:ring-primary-container"
             />
           </div>
 
@@ -93,12 +130,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               max="60"
               value={refreshMins}
               onChange={(e) => setRefreshMins(parseInt(e.target.value) || 5)}
-              className="w-full p-3 rounded-xl bg-surface-container-low border border-surface-variant text-sm text-on-surface outline-none focus:ring-2 focus:ring-primary-container"
+              className="w-full p-3 rounded-xl bg-surface-container-low border border-surface-variant/40 text-sm text-on-surface outline-none focus:ring-2 focus:ring-primary-container"
             />
           </div>
 
           {/* Audio Chimes toggle */}
-          <div className="flex items-center justify-between pt-2">
+          <div className="flex items-center justify-between pt-1">
             <span className="text-xs font-semibold text-on-surface-variant">Sound & Chimes</span>
             <input
               type="checkbox"

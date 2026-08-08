@@ -43,6 +43,12 @@ export default function App() {
       : { focusMinutes: 25, refreshMinutes: 5, autoStartBreaks: false, soundEnabled: true };
   });
 
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    const saved = localStorage.getItem('sanctuary_theme');
+    if (saved) return saved === 'dark';
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
   const [isStretchModalOpen, setIsStretchModalOpen] = useState<boolean>(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState<boolean>(false);
 
@@ -63,7 +69,19 @@ export default function App() {
     localStorage.setItem('sanctuary_timer_settings', JSON.stringify(timerSettings));
   }, [timerSettings]);
 
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('sanctuary_theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('sanctuary_theme', 'light');
+    }
+  }, [isDarkMode]);
+
   // Handlers
+  const handleToggleTheme = () => setIsDarkMode((prev) => !prev);
+
   const handleLogMood = (mood: MoodType) => {
     setSelectedMood(mood);
     const todayStr = new Date().toISOString().split('T')[0];
@@ -108,9 +126,14 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-on-background relative overflow-x-hidden selection:bg-primary-fixed selection:text-on-primary-fixed">
+    <div className="min-h-screen flex flex-col bg-background text-on-background relative overflow-x-hidden selection:bg-primary-fixed selection:text-on-primary-fixed transition-colors duration-300">
       {/* Header Top Bar */}
-      <Header user={user} onOpenSettings={() => setIsSettingsModalOpen(true)} />
+      <Header
+        user={user}
+        isDarkMode={isDarkMode}
+        onToggleTheme={handleToggleTheme}
+        onOpenSettings={() => setIsSettingsModalOpen(true)}
+      />
 
       {/* Dynamic View Canvas */}
       <div className="flex-grow md:pl-24 pb-20 md:pb-8">
@@ -165,6 +188,8 @@ export default function App() {
         onUpdateUser={(updated) => setUser((prev) => ({ ...prev, ...updated }))}
         settings={timerSettings}
         onUpdateSettings={setTimerSettings}
+        isDarkMode={isDarkMode}
+        onSetDarkMode={setIsDarkMode}
       />
     </div>
   );
