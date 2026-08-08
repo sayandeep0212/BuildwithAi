@@ -1,0 +1,6 @@
+{
+  "name": "Digital Sanctuary",
+  "description": "A quiet mindfulness and focus sanctuary with Pomodoro timer, guided stretch suggestions, mood journal calendar, and refocus soundscapes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
